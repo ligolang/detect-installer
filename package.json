@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "colors": "^1.4.0",
+    "commander": "^10.0.1",
+    "debug": "^4.3.4",
+    "fs-extra": "^11.1.1"
+  }
+}

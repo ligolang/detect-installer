@@ -1,0 +1,7 @@
+* npm prefix could reside inside homebrew prefix
+#+begin_quote
+[ '/opt/homebrew/lib/node_modules/ligolang/bin/ligo' ]  
+#+end_quote
+
+Simply finding the binary inside homebrew prefix isn't enough
+=brew list= is the right approach
