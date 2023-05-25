@@ -33,7 +33,7 @@ async function main({ cwd }) {
       unSupportedPlatform(process.platform);
       break;
     case "linux":
-      Linux.detect(platform);
+      installer = await Linux.detect(platform);
       break;
     case "openbsd":
       unSupportedPlatform(process.platform);
@@ -45,7 +45,6 @@ async function main({ cwd }) {
       Windows.detect(platform);
       break;
   }
-  console.log(">>>");
   console.log(installer);
 }
 
