@@ -43,7 +43,7 @@ async function main({ cwd }) {
       unSupportedPlatform(process.platform);
       break;
     case "win32":
-      Windows.detect(platform);
+      installer = await Windows.detect(platform);
       break;
   }
   console.log(installer);
