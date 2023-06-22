@@ -1,0 +1,100 @@
+name: CI
+on: [push]
+jobs:
+  npm-ubuntu:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+      - name: Install ligo via NPM
+        run: npm i -g ligolang@linux --verbose
+      - run: echo "/usr/local/lib/node_modules/ligolang/bin" >> $GITHUB_PATH
+        name: Add ligo binary to $PATH
+      - run: yarn
+        name: Installing dependencies
+      - run: yarn jest --runInBand --detectOpenHandles --forceExit -- npm
+        name: Running npm test
+        env:
+          DEBUG: resolveCmd
+
+  yarn-ubuntu:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+      - name: Install ligo via Yarn
+        run: yarn global add ligolang@linux --verbose
+      - run: echo "${HOME}/.config/yarn/global/node_modules/ligolang/bin" >> $GITHUB_PATH
+        name: Add ligo binary to $PATH
+      - run: yarn
+        name: Installing dependencies
+      - run: yarn jest -- yarn
+        name: Running yarn test
+
+  npm-macos:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+      - name: Install ligo via NPM
+        run: npm i -g ligolang@macos-intel --verbose
+      - run: echo "/usr/local/lib/node_modules/ligolang/bin" >> $GITHUB_PATH
+        name: Add ligo binary to $PATH
+      - run: yarn
+        name: Installing dependencies
+      - run: yarn jest -- npm
+        name: Running npm test
+        env:
+          DEBUG: resolveCmd
+
+  yarn-macos:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+      - name: Install ligo via Yarn
+        run: yarn global add ligolang@macos-intel --verbose
+      - run: echo "${HOME}.config/yarn/global/node_modules/ligolang/bin" >> $GITHUB_PATH
+        name: Add ligo binary to $PATH
+      - run: yarn
+        name: Installing dependencies
+      - run: yarn jest -- yarn
+        name: Running yarn test
+        env:
+          DEBUG: resolveCmd
+
+
+  # # Weirdly, placing brew-macos higher up above fails other jobs - jest times out saying process didn't return
+  # brew-macos:
+  #   runs-on: macos-latest
+  #   steps:
+  #     - name: Update Homebrew
+  #       run: |
+  #         brew tap ligolang/ligo https://gitlab.com/ligolang/ligo.git
+  #         brew update --preinstall
+  #         cat "$(brew --repository)/Library/Taps/ligolang/homebrew-ligo/HomebrewFormula/ligo.rb" > ${HOME}/brew-formulae
+  #     - name: Configure Homebrew cache
+  #       uses: actions/cache@v2
+  #       with:
+  #         path: |
+  #           ~/Library/Caches/Homebrew/ligo--*
+  #           ~/Library/Caches/Homebrew/downloads/*--ligo-*
+        
+  #         key: brew-${{ hashFiles('${HOME}/brew-formulae') }}
+  #         restore-keys: brew-
+
+  #     - name: Install Homebrew dependencies
+  #       run: |
+  #         env HOMEBREW_NO_AUTO_UPDATE=1 brew install ligo
+      
+  #     - run: yarn
+  #       name: Installing dependencies
+  #     - run: yarn jest -- brew
+  #       name: Running npm test
+  #       env:
+  #         DEBUG: resolveCmd
+

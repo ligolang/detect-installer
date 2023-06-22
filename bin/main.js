@@ -1,8 +1,5 @@
 const { Command } = require("commander");
-const Windows = require("../lib/windows");
-const Macos = require("../lib/macos");
-const Linux = require("../lib/linux");
-const Platform = require("../lib/platform");
+const detectInstaller = require("../lib/detect-installer");
 
 const version = require("../package.json").version;
 
@@ -14,39 +11,6 @@ function globalErrorHandler(e) {
     console.log(e);
   }
   process.exit(-1);
-}
-
-function unSupportedPlatform(platform) {
-  throw new Error(`Unsupported platform: ${platform}`);
-}
-
-async function main({ cwd }) {
-  let platform = await Platform.scan();
-  let installer = null;
-  switch (process.platform) {
-    case "aix":
-      unSupportedPlatform(process.platform);
-      break;
-    case "darwin":
-      installer = await Macos.detect(platform);
-      break;
-    case "freebsd":
-      unSupportedPlatform(process.platform);
-      break;
-    case "linux":
-      installer = await Linux.detect(platform);
-      break;
-    case "openbsd":
-      unSupportedPlatform(process.platform);
-      break;
-    case "sunos":
-      unSupportedPlatform(process.platform);
-      break;
-    case "win32":
-      installer = await Windows.detect(platform);
-      break;
-  }
-  console.log(installer);
 }
 
 const program = new Command();
@@ -63,7 +27,12 @@ program
     args.cwd = cwd;
   });
 
-main(args);
+async function main({ cwd }) {
+  let installer = await detectInstaller({ cwd });
+  console.log(installer);
+}
+
+main(args).catch(globalErrorHandler);
 
 process.on("uncaughtException", (err, origin) => {
   globalErrorHandler(err);
