@@ -1,6 +1,7 @@
 {
   "name": "detect-installer",
   "version": "1.0.0",
+  "main": "lib/detect-installer.js",
   "dependencies": {
     "colors": "^1.4.0",
     "commander": "^10.0.1",
